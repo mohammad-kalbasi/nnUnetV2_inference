@@ -14,6 +14,7 @@
 import math
 import multiprocessing
 import shutil
+from pathlib import Path
 from time import sleep
 from typing import Tuple
 
@@ -23,11 +24,12 @@ from batchgenerators.utilities.file_and_folder_operations import *
 from tqdm import tqdm
 from typing import Union
 
-import nnunetv2
-from nnunetv2.preprocessing.cropping.cropping import crop_to_nonzero
-from nnunetv2.preprocessing.resampling.default_resampling import compute_new_shape
-from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
-from nnunetv2.utilities.plans_handling.plans_handler import PlansManager, ConfigurationManager
+from ..cropping.cropping import crop_to_nonzero
+from ..resampling.default_resampling import compute_new_shape
+from ...utilities.find_class_by_name import recursive_find_python_class
+from ...utilities.plans_handling.plans_handler import PlansManager, ConfigurationManager
+
+NORMALIZATION_SEARCH_PATH = Path(__file__).resolve().parent.parent / "normalization"
 
 
 class DefaultPreprocessor(object):
@@ -205,7 +207,7 @@ class DefaultPreprocessor(object):
                    foreground_intensity_properties_per_channel: dict) -> np.ndarray:
         for c in range(data.shape[0]):
             scheme = configuration_manager.normalization_schemes[c]
-            normalizer_class = recursive_find_python_class(join(nnunetv2.__path__[0], "preprocessing", "normalization"),
+            normalizer_class = recursive_find_python_class(str(NORMALIZATION_SEARCH_PATH),
                                                            scheme,
                                                            'nnunetv2.preprocessing.normalization')
             if normalizer_class is None:

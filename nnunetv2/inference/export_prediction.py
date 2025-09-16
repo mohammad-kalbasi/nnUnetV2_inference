@@ -6,8 +6,8 @@ from acvl_utils.cropping_and_padding.bounding_boxes import insert_crop_into_imag
 from batchgenerators.utilities.file_and_folder_operations import load_json, save_pickle
 
 default_num_processes = 8
-from nnunetv2.utilities.label_handling.label_handling import LabelManager
-from nnunetv2.utilities.plans_handling.plans_handler import PlansManager, ConfigurationManager
+from ..utilities.label_handling.label_handling import LabelManager
+from ..utilities.plans_handling.plans_handler import PlansManager, ConfigurationManager
 
 
 def convert_predicted_logits_to_segmentation_with_correct_shape(predicted_logits: Union[torch.Tensor, np.ndarray],
