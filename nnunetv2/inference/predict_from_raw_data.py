@@ -3,6 +3,7 @@ import itertools
 import multiprocessing
 import os
 from copy import deepcopy
+from pathlib import Path
 from queue import Queue
 from threading import Thread
 from time import sleep
@@ -20,17 +21,18 @@ from torch.nn.parallel import DistributedDataParallel
 from tqdm import tqdm
 
 default_num_processes = 8
-import nnunetv2
-from nnunetv2.inference.data_iterators import preprocessing_iterator_fromnpy
-from nnunetv2.inference.export_prediction import export_prediction_from_logits, \
+PACKAGE_ROOT = Path(__file__).resolve().parent.parent
+TRAINER_SEARCH_PATH = PACKAGE_ROOT / "training" / "nnUNetTrainer"
+from .data_iterators import preprocessing_iterator_fromnpy
+from .export_prediction import export_prediction_from_logits, \
     convert_predicted_logits_to_segmentation_with_correct_shape
-from nnunetv2.inference.sliding_window_prediction import compute_gaussian, \
+from .sliding_window_prediction import compute_gaussian, \
     compute_steps_for_sliding_window
-from nnunetv2.utilities.file_path_utilities import check_workers_alive_and_busy
-from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
-from nnunetv2.utilities.helpers import empty_cache, dummy_context
-from nnunetv2.utilities.label_handling.label_handling import determine_num_input_channels
-from nnunetv2.utilities.plans_handling.plans_handler import PlansManager
+from ..utilities.file_path_utilities import check_workers_alive_and_busy
+from ..utilities.find_class_by_name import recursive_find_python_class
+from ..utilities.helpers import empty_cache, dummy_context
+from ..utilities.label_handling.label_handling import determine_num_input_channels
+from ..utilities.plans_handling.plans_handler import PlansManager
 
 
 class nnUNetPredictor(object):
@@ -93,7 +95,7 @@ class nnUNetPredictor(object):
         configuration_manager = plans_manager.get_configuration(configuration_name)
         # restore network
         num_input_channels = determine_num_input_channels(plans_manager, configuration_manager, dataset_json)
-        trainer_class = recursive_find_python_class(join(nnunetv2.__path__[0], "training", "nnUNetTrainer"),
+        trainer_class = recursive_find_python_class(str(TRAINER_SEARCH_PATH),
                                                     trainer_name, 'nnunetv2.training.nnUNetTrainer')
         if trainer_class is None:
             raise RuntimeError(f'Unable to locate trainer class {trainer_name} in nnunetv2.training.nnUNetTrainer. '

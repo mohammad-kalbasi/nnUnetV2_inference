@@ -45,14 +45,14 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 
 ANISO_THRESHOLD = 3 
 default_num_processes = 8 if 'nnUNet_def_n_proc' not in os.environ else int(os.environ['nnUNet_def_n_proc'])
-from nnunetv2.inference.export_prediction import export_prediction_from_logits, resample_and_save
-from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
-from nnunetv2.inference.sliding_window_prediction import compute_gaussian
-from nnunetv2.utilities.file_path_utilities import check_workers_alive_and_busy
-from nnunetv2.utilities.get_network_from_plans import get_network_from_plans
-from nnunetv2.utilities.helpers import empty_cache, dummy_context
-from nnunetv2.utilities.label_handling.label_handling import convert_labelmap_to_one_hot, determine_num_input_channels
-from nnunetv2.utilities.plans_handling.plans_handler import PlansManager
+from ...inference.export_prediction import export_prediction_from_logits, resample_and_save
+from ...inference.predict_from_raw_data import nnUNetPredictor
+from ...inference.sliding_window_prediction import compute_gaussian
+from ...utilities.file_path_utilities import check_workers_alive_and_busy
+from ...utilities.get_network_from_plans import get_network_from_plans
+from ...utilities.helpers import empty_cache, dummy_context
+from ...utilities.label_handling.label_handling import convert_labelmap_to_one_hot, determine_num_input_channels
+from ...utilities.plans_handling.plans_handler import PlansManager
 
 
 class nnUNetTrainer(object):

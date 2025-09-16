@@ -4,26 +4,30 @@ import warnings
 
 from copy import deepcopy
 from functools import lru_cache, partial
+from pathlib import Path
 from typing import Union, Tuple, List, Type, Callable
 
 import numpy as np
 import torch
 
-from nnunetv2.preprocessing.resampling.utils import recursive_find_resampling_fn_by_name
-import nnunetv2
-from batchgenerators.utilities.file_and_folder_operations import load_json, join
+from ...preprocessing.resampling.utils import recursive_find_resampling_fn_by_name
+from batchgenerators.utilities.file_and_folder_operations import load_json
 
-from nnunetv2.utilities.find_class_by_name import recursive_find_python_class
-from nnunetv2.utilities.label_handling.label_handling import get_labelmanager_class_from_plans
+from ..find_class_by_name import recursive_find_python_class
+from ..label_handling.label_handling import get_labelmanager_class_from_plans
 
 # see https://adamj.eu/tech/2021/05/13/python-type-hints-how-to-fix-circular-imports/
 from typing import TYPE_CHECKING
 from dynamic_network_architectures.building_blocks.helper import convert_dim_to_conv_op, get_matching_instancenorm
 
 if TYPE_CHECKING:
-    from nnunetv2.utilities.label_handling.label_handling import LabelManager
-    from nnunetv2.preprocessing.preprocessors.default_preprocessor import DefaultPreprocessor
-    from nnunetv2.experiment_planning.experiment_planners.default_experiment_planner import ExperimentPlanner
+    from ..label_handling.label_handling import LabelManager
+    from ...preprocessing.preprocessors.default_preprocessor import DefaultPreprocessor
+    from ...experiment_planning.experiment_planners.default_experiment_planner import ExperimentPlanner
+
+PACKAGE_ROOT = Path(__file__).resolve().parents[2]
+PREPROCESSING_SEARCH_PATH = PACKAGE_ROOT / "preprocessing"
+EXPERIMENT_PLANNING_SEARCH_PATH = PACKAGE_ROOT / "experiment_planning"
 
 
 class ConfigurationManager(object):
@@ -108,7 +112,7 @@ class ConfigurationManager(object):
     @property
     @lru_cache(maxsize=1)
     def preprocessor_class(self) -> Type[DefaultPreprocessor]:
-        preprocessor_class = recursive_find_python_class(join(nnunetv2.__path__[0], "preprocessing"),
+        preprocessor_class = recursive_find_python_class(str(PREPROCESSING_SEARCH_PATH),
                                                          self.preprocessor_name,
                                                          current_module="nnunetv2.preprocessing")
         return preprocessor_class
@@ -297,7 +301,7 @@ class PlansManager(object):
     @lru_cache(maxsize=1)
     def experiment_planner_class(self) -> Type[ExperimentPlanner]:
         planner_name = self.experiment_planner_name
-        experiment_planner = recursive_find_python_class(join(nnunetv2.__path__[0], "experiment_planning"),
+        experiment_planner = recursive_find_python_class(str(EXPERIMENT_PLANNING_SEARCH_PATH),
                                                          planner_name,
                                                          current_module="nnunetv2.experiment_planning")
         return experiment_planner

@@ -9,16 +9,16 @@ from dynamic_network_architectures.architectures.unet import PlainConvUNet
 from dynamic_network_architectures.building_blocks.helper import convert_dim_to_conv_op, get_matching_instancenorm
 
 ANISO_THRESHOLD = 3
-from nnunetv2.experiment_planning.experiment_planners.network_topology import get_pool_and_conv_props
-from nnunetv2.imageio.reader_writer_registry import determine_reader_writer_from_dataset_json
-from nnunetv2.paths import nnUNet_raw, nnUNet_preprocessed
-from nnunetv2.preprocessing.normalization.map_channel_name_to_normalization import get_normalization_scheme
-from nnunetv2.preprocessing.resampling.default_resampling import resample_data_or_seg_to_shape, compute_new_shape
-from nnunetv2.utilities.dataset_name_id_conversion import maybe_convert_to_dataset_name
-from nnunetv2.utilities.default_n_proc_DA import get_allowed_n_proc_DA
-from nnunetv2.utilities.get_network_from_plans import get_network_from_plans
-from nnunetv2.utilities.json_export import recursive_fix_for_json_export
-from nnunetv2.utilities.utils import get_filenames_of_train_images_and_targets
+from .network_topology import get_pool_and_conv_props
+from ...imageio.reader_writer_registry import determine_reader_writer_from_dataset_json
+from ...paths import nnUNet_raw, nnUNet_preprocessed
+from ...preprocessing.normalization.map_channel_name_to_normalization import get_normalization_scheme
+from ...preprocessing.resampling.default_resampling import resample_data_or_seg_to_shape, compute_new_shape
+from ...utilities.dataset_name_id_conversion import maybe_convert_to_dataset_name
+from ...utilities.default_n_proc_DA import get_allowed_n_proc_DA
+from ...utilities.get_network_from_plans import get_network_from_plans
+from ...utilities.json_export import recursive_fix_for_json_export
+from ...utilities.utils import get_filenames_of_train_images_and_targets
 
 
 class ExperimentPlanner(object):
